@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  login    String  @unique
+
+  tempPassword String?
+  password String?
+  
+  name String
+  surname String
+  phoneNumber String?
+
+  role Role
+
+  farmer FarmerProfile?
+  seedings Seeding[] @ relation("FarmerSeedings")
+}
+
+model FarmerProfile {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique
+  user      User   @relation(fields: [userId], references: [id])
+  
+  company String
+  region String
+  district String
+  ruralDistrict String
+  village String
+  
+  crops    FarmerCrop[]
+}
+
+model FarmerCrop {
+  id         Int    @id @default(autoincrement())
+  farmerId   Int
+  culture   String
+  subculture String
+  plan Float
+
+  farmer     FarmerProfile @relation(fields: [farmerId], references: [id])
+}
+
+model Seeding {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  date      DateTime
+
+  user      User     @relation("FarmerSeedings", fields: [userId], references: [id])
+  userId    Int
+
+  crop String
+  company String
+  plan Float
+  region String
+  village String
+
+  comment String? @db.VarChar(255)
+}
+
+enum Role {
+  SUPERUSER
+  ADMIN
+  HR
+  FARMER
+}
