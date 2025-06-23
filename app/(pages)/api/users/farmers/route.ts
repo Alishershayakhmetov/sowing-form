@@ -4,30 +4,6 @@ import { farmerPUT, TokenPayload } from '@/interfaces/interfaces'
 import { GetPayloadFromToken } from '@/lib/getPayloadFromToken'
 import { UserRole } from '@/utils/roles'
 
-/*
-export async function GET(req: Request) {
-  const requester = await requireRole(['HR'])(req)
-
-  const farmers = await prisma.user.findMany({
-    where: {
-      role: 'FARMER',
-      farmer: {
-        company: requester.company
-      }
-    },
-    select: {
-      id: true,
-      login: true,
-      name: true,
-      surname: true,
-      farmer: true
-    }
-  })
-
-  return NextResponse.json({ farmers })
-}
-*/
-
 export async function GET(req: Request) {
   const payload: TokenPayload = GetPayloadFromToken(req)
 
@@ -66,24 +42,7 @@ export async function GET(req: Request) {
   }
   
 }
-/*
-export async function GET() {
-  const farmers = await prisma.user.findMany({
-    where: { role: 'FARMER' },
-    include: {
-      farmer: {
-        include: {
-          crops: true, // include all crops
-        },
-      },
-    },
-  })
 
-  console.log(farmers)
-
-  return NextResponse.json({ farmers })
-}
-*/
 export async function POST(req: Request) {
   try {
     const data = await req.json()
@@ -176,59 +135,6 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: 'Failed to delete farmer' }, { status: 500 })
   }
 }
-
-/*
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const data = await req.json()
-
-  try {
-    await prisma.user.update({
-      where: { id: Number(params.id) },
-      data: {
-        login: data.login,
-        name: data.name,
-        surname: data.surname,
-        phoneNumber: data.phoneNumber,
-        farmer: {
-          update: {
-            company: data.company,
-            // crop: data.crop,
-            region: data.region,
-            village: data.village,
-            plan: Number(data.plan),
-          },
-        },
-      },
-    })
-    return NextResponse.json({ success: true })
-  } catch (err) {
-    return NextResponse.json({ error: 'Update failed' }, { status: 500 })
-  }
-}
-*/
-
-/*
-{
-  id: 13,
-  login: 'qwertyfarmerlogin',
-  name: 'qwerty',
-  surname: 'qwerty',
-  phoneNumber: '+78005553535',
-  farmer: {
-    company: 'ТОО "йцукен"',
-    region: 'aqmola',
-    village: 'Бурабай',
-    plan: 150,
-    crops: [
-      [Object], [Object],
-      [Object], [Object],
-      [Object], [Object],
-      [Object], [Object],
-      [Object]
-    ]
-  }
-}
-*/
 
 export async function PUT(req: Request) {
   const data: farmerPUT = await req.json()

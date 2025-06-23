@@ -57,9 +57,6 @@ export default function FarmerAccounts() {
         })
         alert('Пароль сброшен')
         await fetchFarmers()
-        // const updatedFarmers = await fetchFarmers()
-        // setSelected(prev => (prev ? farmers.find(f => f.id === prev.id) || null : null))
-        // setSelected(updatedFarmers.find(f => f.id === id) || null)
       } catch (error) {
         console.log('Ошибка сброса пароля:', error)
         alert('Ошибка сброса пароля')

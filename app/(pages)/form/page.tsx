@@ -17,7 +17,8 @@ interface CropInput {
 
 export default function FarmFormPage() {
   const [date, setDate] = useState('')
-  const [crops, setCrops] = useState<Crop[]>([])
+  const [rawCrops, setRawCrops] = useState<Crop[]>([])
+  const [sortedCrops, setSortedCrops] = useState<Crop[]>([])
   const [inputs, setInputs] = useState<Record<number, CropInput>>({})
   const [selectedCropId, setSelectedCropId] = useState<number | null>(null)
   const [success, setSuccess] = useState(false)
@@ -46,7 +47,7 @@ export default function FarmFormPage() {
         const checkData = checkRes.data
 
         const farmerCrops = userData.farmer?.crops || []
-        setCrops(farmerCrops)
+        setRawCrops(farmerCrops)
         setSelectedCropId(farmerCrops[0]?.id ?? null)
 
         const initialInputs: Record<number, CropInput> = {}
@@ -74,24 +75,55 @@ export default function FarmFormPage() {
   }, [date])
 
   useEffect(() => {
-    if (crops.length > 0 && Object.keys(inputs).length === 0) {
+    if (rawCrops.length > 0 && Object.keys(inputs).length === 0) {
       const initialInputs: Record<number, CropInput> = {}
-      crops.forEach((crop: Crop) => {
+      rawCrops.forEach((crop: Crop) => {
         initialInputs[crop.id] = { amount: '', comment: '' }
       })
       setInputs(initialInputs)
     }
-  }, [crops])
-
+  }, [rawCrops])
+  
   const handleChange = (cropId: number, field: 'amount' | 'comment', value: string) => {
-    setInputs(prev => ({
-      ...prev,
-      [cropId]: {
-        ...prev[cropId],
-        [field]: value
+    setInputs(prev => {
+      const updated = {
+        ...prev,
+        [cropId]: {
+          ...prev[cropId],
+          [field]: value
+        }
       }
-    }))
+
+      // If user is filling the "amount" field and it's not empty, move crop to top
+      if (field === 'amount' && value.trim() !== '') {
+        setRawCrops(prevCrops => {
+          const index = prevCrops.findIndex(crop => crop.id === cropId)
+          if (index > 0) {
+            const updatedCrops = [...prevCrops]
+            const [moved] = updatedCrops.splice(index, 1)
+            updatedCrops.unshift(moved)
+            return updatedCrops
+          }
+          return prevCrops
+        })
+      }
+
+      return updated
+    })
   }
+
+  useEffect(() => {
+    const filled: Crop[] = []
+    const unfilled: Crop[] = []
+
+    rawCrops.forEach(crop => {
+      const amount = inputs[crop.id]?.amount?.trim()
+      if (amount) filled.push(crop)
+      else unfilled.push(crop)
+    })
+
+    setSortedCrops([...filled, ...unfilled])
+  }, [inputs, rawCrops])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -99,7 +131,7 @@ export default function FarmFormPage() {
     setError(false)
     setSubmitLoading(true)
 
-    const payload = crops.map(crop => ({
+    const payload = rawCrops.map(crop => ({
       id: crop.id,
       amount: inputs[crop.id]?.amount || '',
       comment: inputs[crop.id]?.comment || '',
@@ -170,7 +202,7 @@ export default function FarmFormPage() {
 
           {/* Culture Selector */}
           <div className="flex flex-wrap gap-2 mb-6 justify-center">
-            {crops.map(crop => {
+            {sortedCrops.map(crop => {
               const filled = inputs[crop.id]?.amount?.trim()
               return (
                 <button
@@ -191,7 +223,7 @@ export default function FarmFormPage() {
             {selectedCropId && inputs[selectedCropId] && (
               <div className="bg-white rounded-lg shadow p-4">
                 <h2 className="text-lg font-semibold text-green-600 mb-3">
-                  {crops.find(c => c.id === selectedCropId)?.culture} — {crops.find(c => c.id === selectedCropId)?.subculture}
+                  {sortedCrops.find(c => c.id === selectedCropId)?.culture} — {sortedCrops.find(c => c.id === selectedCropId)?.subculture}
                 </h2>
                 <div className="mb-4">
                   <label className="block text-gray-700 mb-1">Факт Посеяно за день, га</label>

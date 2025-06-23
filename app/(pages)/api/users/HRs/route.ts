@@ -4,30 +4,6 @@ import { generateTempPassword } from '@/lib/generateTempPassword'
 import { GetPayloadFromToken } from '@/lib/getPayloadFromToken'
 import { UserRole } from '@/utils/roles'
 
-/*
-export async function GET(req: Request) {
-  const requester = await requireRole(['HR'])(req)
-
-  const farmers = await prisma.user.findMany({
-    where: {
-      role: 'FARMER',
-      farmer: {
-        company: requester.company
-      }
-    },
-    select: {
-      id: true,
-      login: true,
-      name: true,
-      surname: true,
-      farmer: true
-    }
-  })
-
-  return NextResponse.json({ farmers })
-}
-*/
-
 export async function GET() {
   const hrs = await prisma.user.findMany({
     where: { role: 'HR' },
@@ -119,13 +95,6 @@ export async function PUT(req: Request) {
         name: data.name,
         surname: data.surname,
         phoneNumber: data.phoneNumber,
-        /*
-        hr: {
-          update: {
-            company: data.farmer.company,
-          },
-        },
-        */
       },
     })
 

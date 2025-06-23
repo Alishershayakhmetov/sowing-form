@@ -94,7 +94,7 @@ export default function Applications() {
           <div>
             <h2 className="text-xl font-bold mb-2">Заявление: {selected.type}</h2>
             <p className="text-sm text-gray-600 mb-1">Компания: {selected.farmer.company}</p>
-            <p className="text-sm text-gray-600 mb-1">Регион: {selected.farmer.region}</p>
+            <p className="text-sm text-gray-600 mb-1">Область: {selected.farmer.region}</p>
             <p className="text-sm text-gray-600 mb-1">Дата: {new Date(selected.targetDate).toLocaleDateString()}</p>
             <p className="text-sm text-gray-600 mb-4">Статус: {selected.status}</p>
 
@@ -160,25 +160,6 @@ export default function Applications() {
                 <p className="text-gray-500">Нет данных</p>
               )}
             </div>
-
-
-
-            {/*
-            <div className="mb-4">
-              <h3 className="font-semibold">Предыдущее значение:</h3>
-              <pre className="bg-gray-100 p-2 rounded overflow-auto text-sm">
-                {JSON.stringify(selected.oldData, null, 2)}
-              </pre>
-            </div>
-
-            <div className="mb-4">
-              <h3 className="font-semibold">Новое значение:</h3>
-              <pre className="bg-gray-100 p-2 rounded overflow-auto text-sm">
-                {JSON.stringify(selected.newData, null, 2)}
-              </pre>
-            </div>
-            */}
-            
 
             {selected.status === 'pending' && (
               <div className="space-x-4">

@@ -13,8 +13,8 @@ interface UserDashboardData {
   surname: string
   phoneNumber: string
   role: UserRole.FARMER | UserRole.HR | UserRole.ADMIN
-  company: string
   // FARMER-specific
+  company?: string
   region?: string
   district?: string
   ruralDistrict?: string
@@ -33,12 +33,6 @@ const fieldLabels: Record<string, string> = {
   ruralDistrict: 'Сельский округ',
   village: 'Поселок, село',
 }
-
-const regions = [
-  "Аккольский", "Аршалынский", "Астраханский", "Атбасарский", "Буландынский", "Бурабайский",
-  "Егиндыкольский", "Есильский", "Жаркаинский", "Зерендинский", "Коргалжынский",
-  "Сандыктауский", "Шортандинский", "район Биржан-сал", "Целиноградский"
-]
 
 const roleTranslations: Record<UserRole, string> = {
   [UserRole.FARMER]: 'Фермер',
