@@ -3,14 +3,24 @@ import mongoClient from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+interface PostParams {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export async function POST(
+  req: Request,
+  { params }: PostParams
+) {
+  const { id } = await params
   const { status }: { status: 'approved' | 'declined' } = await req.json()
 
   if (!['approved', 'declined'].includes(status)) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
   }
 
-  const application = await mongoClient.collection('applications').findOne({ _id: new ObjectId(params.id) })
+  const application = await mongoClient.collection('applications').findOne({ _id: new ObjectId(id) })
 
   if (!application) {
     return NextResponse.json({ error: 'Application not found' }, { status: 404 })
@@ -19,7 +29,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   // If declined, just update status in MongoDB
   if (status === 'declined') {
     await mongoClient.collection('applications').updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: { status } }
     )
 
@@ -47,7 +57,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     await prisma.$transaction(updates)
 
     await mongoClient.collection('applications').updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: { status } }
     )
 
