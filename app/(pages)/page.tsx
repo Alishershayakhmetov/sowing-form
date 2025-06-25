@@ -20,7 +20,7 @@ export default function HomePage() {
         }
       } catch (error) {
         // Not authenticated or error occurred
-        router.push('/register')
+        router.push('/login')
       }
     }
 
