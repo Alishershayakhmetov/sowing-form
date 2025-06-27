@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '@/app/components/header'
 import axios from 'axios'
 
@@ -11,6 +11,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const unauthorized = searchParams.get('unauthorized')
+    if (unauthorized === '1') {
+      setError('Пожалуйста, войдите в аккаунт для доступа к этой странице')
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

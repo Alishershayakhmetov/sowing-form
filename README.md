@@ -2,19 +2,40 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to get the project up and running locally.
+
+### 1. Install Dependencies
+
+First, install all the required packages:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+
+Create a .env file in the root directory of your project with the following content:
+
+```bash
+JWT_SECRET=
+DATABASE_URL=
+MONGODB_URI=
+MONGODB_NAME=
+```
+
+### 3. Generate Prisma Client
+
+Once your environment variables are set, run the following command to generate the Prisma client:
+
+```bash
+npx prisma generate
+```
+
+### 4. Run the Development Server
+Now you can start the development server:
+```bash
+npm run dev
+```
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

@@ -8,33 +8,22 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value
   console.log('[MIDDLEWARE] Token:', token)
 
-  if (!token) return NextResponse.redirect(new URL('/login', req.url))
+  if (!token) return RedirectToLogin(req)
 
   try {
     await jwtVerify(token, secret)
     return NextResponse.next()
   } catch (err) {
-    console.error('[MIDDLEWARE] Token verification failed:', err)
-    return NextResponse.redirect(new URL('/login', req.url))
+    RedirectToLogin(req)
   }
 }
 
 export const config = {
-  matcher: ['/dashboard', '/form'],
+  matcher: ['/dashboard', '/form', '/control-panel'],
 }
 
-/*
-// middleware/auth.ts
-function requireRole(allowedRoles: Role[]) {
-  return async function (req: Request) {
-    const token = getTokenFromCookies(req)
-    const user = verifyToken(token) // -> { id, role, company }
-
-    if (!user || !allowedRoles.includes(user.role)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    return user;
-  };
+function RedirectToLogin(req: NextRequest) {
+  const loginUrl = new URL('/login', req.url)
+  loginUrl.searchParams.set('unauthorized', '1')
+  return NextResponse.redirect(loginUrl)
 }
-*/
