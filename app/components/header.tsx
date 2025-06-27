@@ -23,7 +23,6 @@ export default function Header() {
       try {
         const res = await axios.get('/api/users/me', { withCredentials: true })
         const data = res.data
-        console.log(data.role)
 
         if ([UserRole.HR, UserRole.ADMIN, UserRole.SUPERUSER].includes(data.role)) {
           setIsAdmin(true)

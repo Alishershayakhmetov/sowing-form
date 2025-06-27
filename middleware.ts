@@ -6,7 +6,6 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value
-  console.log('[MIDDLEWARE] Token:', token)
 
   if (!token) return RedirectToLogin(req)
 

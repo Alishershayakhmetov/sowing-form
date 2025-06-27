@@ -44,8 +44,6 @@ export default function AddFarmerModal({ onClose, onCreated }: { onClose: () => 
 
   const handleSubmit = async () => {
     try {
-      console.log({ ...form, crops: selectedCrops })
-
       await axios.post('/api/users/farmers', {
         ...form,
         crops: selectedCrops,
